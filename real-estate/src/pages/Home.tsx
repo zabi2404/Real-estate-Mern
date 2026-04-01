@@ -2,14 +2,29 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
-import 'swiper/css/bundle';
+import 'swiper/css';
+import 'swiper/css/navigation';
 import ListingItem from '../components/ListingCard';
 import axios from 'axios';
 
+type ListingType = {
+  _id: string;
+  ImageUrl: string[];
+  name: string;
+  address: string;
+  description: string;
+  offer: boolean;
+  regularPrice: number;
+  discountedPrice: number;
+  type: string;
+  bedroom: number;
+  bathroom: number;
+};
+
 export default function Home() {
-  const [offerListings, setOfferListings] = useState([]);
-  const [saleListings, setSaleListings] = useState([]);
-  const [rentListings, setRentListings] = useState([]);
+  const [offerListings, setOfferListings] = useState<ListingType[]>([]);
+  const [saleListings, setSaleListings] = useState<ListingType[]>([]);
+  const [rentListings, setRentListings] = useState<ListingType[]>([]);
 
   useEffect(() => {
     const fetchOfferListings = async () => {
@@ -75,7 +90,7 @@ export default function Home() {
         {offerListings?.length > 0 &&
           offerListings.map((listing) =>
             listing?.ImageUrl?.length > 0 ? (
-              listing.ImageUrl.map((img, index) => (
+              listing.ImageUrl.map((img: string, index: number) => (
                 <SwiperSlide key={`${listing._id}-${index}`}>
                   <div
                     style={{

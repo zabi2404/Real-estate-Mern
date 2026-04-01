@@ -153,9 +153,7 @@ export default function Profile() {
           },
           onUploadProgress: (progressEvent) => {
             if (progressEvent.lengthComputable) {
-              const percent = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total!
-              );
+              Math.round((progressEvent.loaded * 100) / progressEvent.total!);
            
             }
           },

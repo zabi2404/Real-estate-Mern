@@ -8,7 +8,7 @@ export default function updateListing() {
 
     const [file, setFile] = useState<File[]>([]);
     const { currentUser } = useSelector((state: any) => state.user)
-    const [Error, setError] = useState("");
+    const [errorMessage, setError] = useState("");
     const [loading, Setloadind] = useState(false)
     const [progress, setProgress] = useState<number>(0);
     const cloudinaryUploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
@@ -408,7 +408,7 @@ export default function updateListing() {
                             <button className='disabled:opacity-60 w-full mt-4 max-w-[450px] min-w-[300px] bg-[#334156] p-4 rounded-[6px] text-white cursor-pointer'>
                                 {loading ? "Loading..." : " Update Listing"}
                             </button>
-                            {Error && <p>{Error}</p>}
+                            {errorMessage && <p>{errorMessage}</p>}
                         </div>
                     </div>
                 </form>

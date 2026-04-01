@@ -3,11 +3,25 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import ListingCard from "../components/ListingCard";
 
+type ListingType = {
+    _id: string;
+    ImageUrl: string[];
+    name: string;
+    address: string;
+    description: string;
+    offer: boolean;
+    regularPrice: number;
+    discountedPrice: number;
+    type: string;
+    bedroom: number;
+    bathroom: number;
+};
+
 export default function Search() {
     const [loading, setLoading] = useState<boolean>()
     const navigate = useNavigate();
     const [showMore, setShowMore] = useState(false)
-    const [listingData, setListingData] = useState([])
+    const [listingData, setListingData] = useState<ListingType[]>([])
     const [sideBarSearch, setsideBarSearch] = useState({
         searchTerm: '',
         type: 'all',
@@ -96,7 +110,7 @@ export default function Search() {
                 setsideBarSearch(
                     {
                         ...sideBarSearch,
-                        [e.target.name]: e.target.checked || e.target.checked === 'true' ? true : false
+                        [e.target.name]: e.target.checked
                     })
             }
         }
@@ -118,8 +132,8 @@ export default function Search() {
 
         try {
             const res = await axios.get(`/api/listing/get?${urlParams.toString()}`)
-            const data = res.data
-            setListingData([...listingData, ...data])
+            const data = res.data as ListingType[]
+            setListingData((prev) => [...prev, ...data])
             if (data.length < 9) {
                 setShowMore(false)
             }

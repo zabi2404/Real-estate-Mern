@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { response } from 'express';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { IoLocationOutline } from "react-icons/io5";
 import { FaBed } from "react-icons/fa";
@@ -10,8 +9,9 @@ import { FaChair } from "react-icons/fa";
 import { useSelector } from 'react-redux';
 import MessageButton from '../components/MessageButton';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css/bundle';
-import { Navigation, Pagination } from "swiper/modules";
+import 'swiper/css';
+import 'swiper/css/navigation';
+import { Navigation } from "swiper/modules";
 
 
 
@@ -114,7 +114,7 @@ export default function ListingPage() {
                         <div>
                             <div className='flex gap-4 my-4'>
                                 <p className='py-2 px-15 rounded-[6px] bg-red-800 text-white w-fit'> For {form?.type !== "sell" ? "Rent" : "Sale"}</p>
-                                {form.offer &&
+                                {form?.offer &&
 
                                     <p className='py-2 px-15 rounded-[6px] bg-green-900 text-white w-fit'> {discount}$ discount</p>
                                 }
@@ -139,7 +139,7 @@ export default function ListingPage() {
                                 </ul>
                             </div>
                         </div>
-                        {currentUser && (currentUser._id !== form.userRef) && !sendMessage &&
+                        {currentUser && (currentUser._id !== form?.userRef) && !sendMessage &&
                             <div className="w-full mt-4 max-w-[450px] min-w-[300px] bg-[#334156] p-4 rounded-[6px] flex justify-center items-center">
                                 <button onClick={() => { setSendMessage(true) }} className="cursor-pointer uppercase text-white outline-none ">
                                     contact Landlord
@@ -147,9 +147,9 @@ export default function ListingPage() {
                             </div>
                         }
                         {
-                            sendMessage && form &&
+                            sendMessage && form?.userRef && form.name &&
                             <MessageButton
-                                form={form}
+                                form={{ userRef: form.userRef, name: form.name }}
                             />
                         }
 
