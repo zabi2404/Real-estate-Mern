@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/userRoutes.js";
 import authRoute from "./routes/authRoute.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import listingRoute from './routes/listingRoute.js'
 dotenv.config();
 
@@ -14,6 +15,14 @@ mongoose.connect(process.env.MONGO)
 
 const app =express();
 const port = process.env.PORT || 2404;
+const allowedOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
+    : true;
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
 app.use(express.json())// we can't directly send json to the server from the frontend if we do we get undefeined but after this we got the data . it allow as the server to input as a json
 app.use(cookieParser());
 app.use('/api/user',userRouter)

@@ -3,6 +3,16 @@ import bcrypt from "bcrypt";
 import { errorHnadle } from "../utils/error.js";
 import jwt from "jsonwebtoken"
 
+const getCookieOptions = () => {
+  const isProduction = process.env.NODE_ENV === "production";
+  return {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  };
+};
+
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -29,7 +39,7 @@ export const signin = async (req, res, next) => {
 
     const { password: pass, ...rest } = validUser._doc;
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET) // a secure way to snd data to frontend just sending useer id in it to verify user it send to server on every req and in server we cheeck this token to verify user
-    res.cookie('token', token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) }) // storing token in cookies in front end it get back on every req to the server
+    res.cookie('token', token, getCookieOptions()) // storing token in cookies in front end it get back on every req to the server
     .status(200)
     .json( rest ) // sending info about the user excluding the user password and caputre this on the frontend and save into local storage using redux
 
@@ -48,7 +58,7 @@ export const signin = async (req, res, next) => {
       if (user) {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
         const { password: pass, ...rest } = user._doc;
-        res.cookie("token", token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) })
+        res.cookie("token", token, getCookieOptions())
           .status(200)
           .json(rest)
 
@@ -60,7 +70,7 @@ export const signin = async (req, res, next) => {
 
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET)
         const { password: pass, ...rest } = newUser._doc;
-        res.cookie("token", token, { httpOnly: true, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) })
+        res.cookie("token", token, getCookieOptions())
           .status(200)
           .json(rest)
       }
@@ -75,7 +85,12 @@ export const signin = async (req, res, next) => {
 
 try {
   
-  res.clearCookie("token").status(200).json("User sign Out");
+  const cookieOptions = getCookieOptions();
+  res.clearCookie("token", {
+    httpOnly: cookieOptions.httpOnly,
+    sameSite: cookieOptions.sameSite,
+    secure: cookieOptions.secure,
+  }).status(200).json("User sign Out");
 
 } catch (error) {
   next(error)
